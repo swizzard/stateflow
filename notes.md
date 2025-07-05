@@ -1,0 +1,35 @@
+- like [terraform](https://developer.hashicorp.com/terraform) + ETL
+
+- predicates
+  - `a >(=)/<(=) b`
+  - nth day of period
+    - week, month, quarter, etc
+- combinators
+  - and, or, not
+  - stateful/temporal
+    - was-true-(as-of/prior-to)
+  - combine combinators (e.g. and not)
+- sources
+  - apis etc
+  - composite
+    - type (http, ftp, s3, db)
+    - connection info, credentials
+    - schedule
+    - post-processing?
+    - **minimally bespoke**
+      - "this stripe data twice a month" vel sim. is probably fine for a lot of people
+- effects
+  - purchase orders, moving inventory, etc
+    - i'm least knowledgeable here
+  - deontologically similar to sources
+    - type (purchase, transport, etc)
+    - vendor info, order info
+    - date
+    - **symbolic**
+      - no company credit card numbers, no vendor venmo details
+      - PII, financial credentials stored **somewhere else**
+- error reporting configured **elsewhere**
+- open qs
+  - fusion
+    - what, how
+  - effect cancelation
