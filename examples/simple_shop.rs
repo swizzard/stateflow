@@ -1,4 +1,4 @@
-use stateflow::*;
+use stateflow::prelude::*;
 use std::collections::HashMap;
 use std::future::{Future, ready};
 

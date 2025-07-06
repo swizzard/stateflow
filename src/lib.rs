@@ -1,12 +1,8 @@
 use thiserror::Error;
 
-pub mod predicate;
-pub mod source;
-
-pub use predicate::{
-    And, BinaryCombinable, Combinable, Not, OnDoW, Or, Predicate, TemporalPredicate,
-};
-pub use source::Source;
+mod predicate;
+pub mod prelude;
+mod source;
 
 #[derive(Error, Debug)]
 pub enum SFError {
