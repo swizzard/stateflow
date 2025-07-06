@@ -56,7 +56,7 @@ fn decider() -> impl Predicate<Data = StockData> {
     let on_tuesday: OnDoW<StockData> = OnDoW::on_tues();
     let low_pants = LowStock::new(Item::Pant, 200usize);
     let low_shirts = LowStock::new(Item::Shirt, 100usize);
-    And::combine(on_tuesday, Or::combine(low_pants, low_shirts)).finalize()
+    And::combine(Not::new(on_tuesday), Or::combine(low_pants, low_shirts)).finalize()
 }
 
 #[tokio::main]

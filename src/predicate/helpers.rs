@@ -2,6 +2,7 @@ use super::temporal::TemporalPredicate;
 use super::traits::{BinaryCombinable, Combinable, Predicate};
 use chrono::{DateTime, Datelike, Utc};
 
+#[derive(Clone)]
 pub struct Not<C, D>(C)
 where
     D: Send,
