@@ -1,4 +1,3 @@
-use chrono::prelude::*;
 use stateflow::*;
 use std::collections::HashMap;
 use std::future::{Future, ready};
@@ -50,56 +49,6 @@ impl Predicate for LowStock {
 
     fn evaluate(&self, data: &Self::Data) -> bool {
         &self.threshold < data.stock.get(&self.item).unwrap_or(&0usize)
-    }
-}
-
-#[derive(Clone)]
-pub struct OnDoW<D> {
-    on_day: chrono::Weekday,
-    _data: std::marker::PhantomData<D>,
-}
-
-impl<D> OnDoW<D>
-where
-    D: Clone,
-{
-    fn new(on_day: chrono::Weekday) -> Self {
-        Self {
-            on_day,
-            _data: std::marker::PhantomData,
-        }
-    }
-    pub fn on_mon() -> Self {
-        OnDoW::new(chrono::Weekday::Mon)
-    }
-    pub fn on_tues() -> Self {
-        OnDoW::new(chrono::Weekday::Tue)
-    }
-    pub fn on_wed() -> Self {
-        OnDoW::new(chrono::Weekday::Wed)
-    }
-    pub fn on_thu() -> Self {
-        OnDoW::new(chrono::Weekday::Thu)
-    }
-    pub fn on_fri() -> Self {
-        OnDoW::new(chrono::Weekday::Fri)
-    }
-    pub fn on_sat() -> Self {
-        OnDoW::new(chrono::Weekday::Sat)
-    }
-    pub fn on_sun() -> Self {
-        OnDoW::new(chrono::Weekday::Sun)
-    }
-}
-
-impl<D> TemporalPredicate for OnDoW<D>
-where
-    D: Send,
-{
-    type Data = D;
-
-    fn evaluate_with_datetime(&self, _data: &Self::Data, date: DateTime<Utc>) -> bool {
-        date.weekday() == self.on_day
     }
 }
 

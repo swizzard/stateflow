@@ -3,8 +3,9 @@ use thiserror::Error;
 pub mod predicate;
 pub mod source;
 
-pub use predicate::TemporalPredicate;
-pub use predicate::{And, BinaryCombinable, Combinable, Not, Or, Predicate};
+pub use predicate::{
+    And, BinaryCombinable, Combinable, Not, OnDoW, Or, Predicate, TemporalPredicate,
+};
 pub use source::Source;
 
 #[derive(Error, Debug)]
