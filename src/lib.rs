@@ -3,6 +3,7 @@ use thiserror::Error;
 pub mod predicate;
 pub mod source;
 
+pub use predicate::TemporalPredicate;
 pub use predicate::{And, BinaryCombinable, Combinable, Not, Or, Predicate};
 pub use source::Source;
 
