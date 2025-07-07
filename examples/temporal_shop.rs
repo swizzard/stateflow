@@ -1,6 +1,5 @@
 use stateflow::prelude::*;
 use std::collections::HashMap;
-use std::future::{Future, ready};
 
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Item {
@@ -20,18 +19,13 @@ impl StockData {
     }
 }
 
-pub struct StockSource {}
-
-impl Source for StockSource {
-    type Data = StockData;
-
-    fn get_data(&self) -> impl Future<Output = Result<Self::Data, SFError>> + Send {
-        let mut data = StockData::default();
-        data.set_stock(Item::Pant, 100);
-        data.set_stock(Item::Shirt, 200);
-        ready(Ok(data))
-    }
+fn source() -> ConstSource<StockData> {
+    let mut data = StockData::default();
+    data.set_stock(Item::Pant, 100);
+    data.set_stock(Item::Shirt, 200);
+    ConstSource::new(data)
 }
+
 #[derive(Clone)]
 pub struct LowStock {
     item: Item,
@@ -61,9 +55,8 @@ fn decider() -> impl Predicate<Data = StockData> {
 
 #[tokio::main]
 async fn main() {
-    let source = StockSource {};
     let evaluator = decider();
-    let data = source.get_data().await.unwrap();
+    let data = source().get_data().await.unwrap();
     let decision = if evaluator.evaluate(&data) {
         "should"
     } else {
