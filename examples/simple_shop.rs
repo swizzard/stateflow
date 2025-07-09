@@ -1,6 +1,9 @@
+//! # A simple example of creating a [`Predicate`] that evaluates data from a [`Source`]
+
 use stateflow::prelude::*;
 use std::collections::HashMap;
 
+/// Items we might have in stock
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Item {
     Pant,
@@ -8,17 +11,20 @@ pub enum Item {
     Skirt,
 }
 
+/// Our inventory
 #[derive(Clone, Debug, Default)]
 pub struct StockData {
     stock: HashMap<Item, usize>,
 }
 
 impl StockData {
+    /// Update our stock with specific [`Item`]s
     pub fn set_stock(&mut self, item: Item, amount: usize) {
         self.stock.insert(item, amount);
     }
 }
 
+/// Create a [`ConstSource`] representing our inventory management system
 fn source() -> ConstSource<StockData> {
     let mut data = StockData::default();
     data.set_stock(Item::Pant, 100);
@@ -26,6 +32,7 @@ fn source() -> ConstSource<StockData> {
     ConstSource::new(data)
 }
 
+/// Predicate testing low stock
 #[derive(Clone)]
 pub struct LowStock {
     item: Item,
@@ -46,6 +53,7 @@ impl Predicate for LowStock {
     }
 }
 
+/// Create a [`Predicate`] to decide if we need more inventory
 fn decider() -> impl Predicate<Data = StockData> {
     let low_pants = LowStock::new(Item::Pant, 200usize);
     let low_shirts = LowStock::new(Item::Shirt, 100usize);

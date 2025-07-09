@@ -1,6 +1,9 @@
+//! An example adding in a [`TemporalPredicate`] and more [`Combinable`]s
+
 use stateflow::prelude::*;
 use std::collections::HashMap;
 
+/// Items we might have in stock
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Item {
     Pant,
@@ -8,6 +11,7 @@ pub enum Item {
     Skirt,
 }
 
+/// Our inventory
 #[derive(Clone, Debug, Default)]
 pub struct StockData {
     stock: HashMap<Item, usize>,
@@ -19,6 +23,7 @@ impl StockData {
     }
 }
 
+/// Create a [`ConstSource`] representing our inventory management system
 fn source() -> ConstSource<StockData> {
     let mut data = StockData::default();
     data.set_stock(Item::Pant, 100);
@@ -26,6 +31,7 @@ fn source() -> ConstSource<StockData> {
     ConstSource::new(data)
 }
 
+/// Predicate testing low stock
 #[derive(Clone)]
 pub struct LowStock {
     item: Item,
@@ -46,6 +52,8 @@ impl Predicate for LowStock {
     }
 }
 
+/// Create a [`Predicate`] to decide if we need more inventory   
+/// This one uses a [`TemporalPredicate`], [`And`], [`Or`], and [`Not`]
 fn decider() -> impl Predicate<Data = StockData> {
     let on_tuesday: OnDoW<StockData> = OnDoW::on_tues();
     let low_pants = LowStock::new(Item::Pant, 200usize);

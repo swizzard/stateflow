@@ -1,7 +1,10 @@
+//! # Pre-defined [`Predicate`]s and [`Combinable`]s
+
 use super::temporal::TemporalPredicate;
 use super::traits::{BinaryCombinable, Combinable, Predicate};
 use chrono::{DateTime, Datelike, Utc};
 
+/// Negate a [`Predicate`]
 #[derive(Clone)]
 pub struct Not<C, D>(C)
 where
@@ -13,6 +16,7 @@ where
     D: Send,
     C: Combinable<Data = D>,
 {
+    /// Create a new [`Not`]
     pub fn new(c: C) -> Self {
         Self(c)
     }
@@ -29,8 +33,9 @@ where
     }
 }
 
+/// Logically `and` two [`Combinable`]s
 #[derive(Clone)]
-pub struct And<L, R, D>
+pub struct And<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
@@ -40,20 +45,21 @@ where
     right: R,
 }
 
-impl<L, R, D> And<L, R, D>
+impl<D, L, R> And<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
     R: Combinable<Data = D>,
 {
+    /// Create a new [`And`]
     pub fn new(left: L, right: R) -> Self {
         Self { left, right }
     }
 }
 
-impl<L, R, D> BinaryCombinable<L, R, D> for And<L, R, D>
+impl<D, L, R> BinaryCombinable<D, L, R> for And<D, L, R>
 where
-    D: Send,
+    D: Send + Clone,
     L: Combinable<Data = D>,
     R: Combinable<Data = D>,
 {
@@ -62,7 +68,7 @@ where
     }
 }
 
-impl<L, R, D> Combinable for And<L, R, D>
+impl<D, L, R> Combinable for And<D, L, R>
 where
     D: Send + std::clone::Clone,
     L: Combinable<Data = D>,
@@ -77,7 +83,7 @@ where
     }
 }
 
-struct Anded<L, R, D>
+struct Anded<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
@@ -87,7 +93,7 @@ where
     right: R,
 }
 
-impl<L, R, D> Predicate for Anded<L, R, D>
+impl<D, L, R> Predicate for Anded<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
@@ -99,8 +105,9 @@ where
     }
 }
 
+/// Logically `or` two [`Combinable`]s
 #[derive(Clone)]
-pub struct Or<L, R, D>
+pub struct Or<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
@@ -110,20 +117,21 @@ where
     right: R,
 }
 
-impl<L, R, D> Or<L, R, D>
+impl<D, L, R> Or<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
     R: Combinable<Data = D>,
 {
+    /// Create a new [`Or`]
     pub fn new(left: L, right: R) -> Self {
         Self { left, right }
     }
 }
 
-impl<L, R, D> BinaryCombinable<L, R, D> for Or<L, R, D>
+impl<D, L, R> BinaryCombinable<D, L, R> for Or<D, L, R>
 where
-    D: Send,
+    D: Send + Clone,
     L: Combinable<Data = D>,
     R: Combinable<Data = D>,
 {
@@ -132,7 +140,7 @@ where
     }
 }
 
-impl<L, R, D> Combinable for Or<L, R, D>
+impl<D, L, R> Combinable for Or<D, L, R>
 where
     D: Send + std::clone::Clone,
     L: Combinable<Data = D>,
@@ -147,7 +155,7 @@ where
     }
 }
 
-struct Ored<L, R, D>
+struct Ored<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
@@ -157,7 +165,7 @@ where
     right: R,
 }
 
-impl<L, R, D> Predicate for Ored<L, R, D>
+impl<D, L, R> Predicate for Ored<D, L, R>
 where
     D: Send,
     L: Combinable<Data = D>,
@@ -169,6 +177,7 @@ where
     }
 }
 
+/// [`TemporalPredicate`] that ignores `D` and evaluates the day of the week
 #[derive(Clone)]
 pub struct OnDoW<D> {
     on_day: chrono::Weekday,
@@ -185,24 +194,31 @@ where
             _data: std::marker::PhantomData,
         }
     }
+    /// Create a new [`OnDoW`] that checks if it's Monday
     pub fn on_mon() -> Self {
         OnDoW::new(chrono::Weekday::Mon)
     }
+    /// Create a new [`OnDoW`] that checks if it's Tuesday
     pub fn on_tues() -> Self {
         OnDoW::new(chrono::Weekday::Tue)
     }
+    /// Create a new [`OnDoW`] that checks if it's Wednesday
     pub fn on_wed() -> Self {
         OnDoW::new(chrono::Weekday::Wed)
     }
+    /// Create a new [`OnDoW`] that checks if it's Thursday
     pub fn on_thu() -> Self {
         OnDoW::new(chrono::Weekday::Thu)
     }
+    /// Create a new [`OnDoW`] that checks if it's Friday
     pub fn on_fri() -> Self {
         OnDoW::new(chrono::Weekday::Fri)
     }
+    /// Create a new [`OnDoW`] that checks if it's Saturday
     pub fn on_sat() -> Self {
         OnDoW::new(chrono::Weekday::Sat)
     }
+    /// Create a new [`OnDoW`] that checks if it's Sunday
     pub fn on_sun() -> Self {
         OnDoW::new(chrono::Weekday::Sun)
     }
